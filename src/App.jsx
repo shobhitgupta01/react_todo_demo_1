@@ -4,25 +4,15 @@ import './App.css';
 
 function App() {
 
-  const [todos, setTodos] = useState([{
-    id: 1,
-    title: "Demo",
-    description: "this is demo"
-  }]);
-
-  useEffect(()=>{
-    setInterval(()=>{
-      fetch("https://sum-server.100xdevs.com/todos").then(async(res)=>{
-      const json = await res.json();
-      setTodos(json.todos)
-    });
-    }, 2000);
-  },[])
+  const [id, setId] = useState(1);
 
   return <>
   <h1 style={{margin:"20px"}}>Todos</h1>
-  {todos.map(todo => <CardWrapper key={todo.id}><TodoComponent  title={todo.title} description={todo.description}/></CardWrapper>)}
- 
+  <button style={{margin:"20px"}} onClick={()=>{setId(1)}}>1</button>
+  <button style={{margin:"20px"}} onClick={()=>{setId(2)}}>2</button>
+  <button style={{margin:"20px"}} onClick={()=>{setId(3)}}>3</button>
+  <button style={{margin:"20px"}} onClick={()=>{setId(4)}}>4</button>
+  <TodoWithId id={id}/>
   </> 
   
   
@@ -42,5 +32,21 @@ function TodoComponent({title, description}){
   </div>
 }
 
+function TodoWithId({id}){
+  const [todo, setTodo] = useState({});
+
+  async function getTodo(id){
+    const res = await fetch(`https://sum-server.100xdevs.com/todo?id=${id}`);
+    const json = await res.json();
+    setTodo(json.todo)
+  }
+  useEffect(()=>{
+    getTodo(id);
+  },[id])
+
+  return (
+    <CardWrapper><TodoComponent title={todo.title} description={todo.description}/></CardWrapper>
+  )
+}
 
 export default App
